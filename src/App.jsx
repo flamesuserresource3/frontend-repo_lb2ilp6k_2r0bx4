@@ -1,189 +1,100 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Navbar from './components/Navbar.jsx';
 import HomeHero from './components/HomeHero.jsx';
-import AboutSection from './components/AboutSection.jsx';
-import ProductsSection from './components/ProductsSection.jsx';
+import IndustriesReach from './components/IndustriesReach.jsx';
+import ContactSection from './components/ContactSection.jsx';
 
-function App() {
-  // Intersection Observer for subtle reveal animations
+export default function App() {
   useEffect(() => {
-    const els = document.querySelectorAll('[data-animate]');
+    const elements = document.querySelectorAll('[data-animate]');
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('is-visible');
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.12 }
     );
-    els.forEach((el) => io.observe(el));
+    elements.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, []);
 
   return (
-    <div className="font-sans text-neutral-900 bg-white selection:bg-cyan-100 selection:text-neutral-900">
-      <Navbar />
-      <main className="scroll-smooth">
-        <HomeHero />
-        <AboutSection />
-        <ProductsSection />
+    <div className="min-h-screen bg-white text-neutral-900 selection:bg-cyan-100 selection:text-black">
+      <style>{`
+        html { scroll-behavior: smooth; }
+        /* Reveal animations */
+        [data-animate] { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+        [data-animate].is-visible { opacity: 1; transform: translateY(0); }
+        /* Subtle moving gradient */
+        @keyframes gradientShift { 0%{transform: translate(0,0)} 50%{transform: translate(10px,-6px)} 100%{transform: translate(0,0)} }
+        .animate-gradient { animation: gradientShift 8s ease-in-out infinite; }
+        /* Shimmer button */
+        .shimmer-button { position: relative; display: inline-flex; align-items: center; justify-content: center; gap:.5rem; padding:.875rem 1.1rem; border-radius:.75rem; font-weight:600; color:#0b0b0b; background:#fff; border:1px solid #e5e5e5; overflow:hidden; isolation:isolate;}
+        .shimmer-button .button-content { position: relative; z-index: 2; }
+        .shimmer-button .backdrop { position:absolute; inset:0; background:linear-gradient(90deg,#00BFFF, #6FE7F7); opacity:.08; z-index:0; }
+        .shimmer-button .highlight { position:absolute; inset:-1px; background:radial-gradient(120px 120px at var(--mx,50%) var(--my,50%), rgba(111,231,247,.25), transparent 60%); z-index:1; transition:opacity .2s ease; opacity:0; pointer-events:none }
+        .shimmer-button:hover .highlight { opacity:1; }
+        .shimmer-button .spark-container { position:absolute; inset:-40%; transform: translateX(-60%); z-index:1; pointer-events:none }
+        .shimmer-button .spark { width:120%; height:120%; transform: rotate(15deg); overflow:hidden }
+        .shimmer-button .spark-inner { width:40%; height:140%; background: linear-gradient( to right, rgba(255,255,255,0) 0%, rgba(111,231,247,.9) 50%, rgba(255,255,255,0) 100% ); filter: blur(8px); animation: spark-move 2.6s ease-in-out infinite; }
+        @keyframes spark-move { 0%{ transform: translateX(-120%) } 50%{ transform: translateX(60%) } 100%{ transform: translateX(140%) } }
+        .shimmer-button:disabled { opacity:.7; cursor: not-allowed }
+      `}</style>
 
-        {/* Contact */}
-        <section id="contact" className="py-24 md:py-32 bg-white">
-          <div className="mx-auto max-w-6xl px-6 grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
-            <h2 className="md:col-span-4 text-2xl md:text-3xl font-semibold tracking-tight" data-animate="fade-right">
-              Contact
-            </h2>
-            <div className="md:col-span-8">
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-6 border border-neutral-200 rounded-xl p-6 bg-[#F9F9F9]"
-                data-animate="fade-up"
-              >
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="name" className="text-sm tracking-wide uppercase text-neutral-700">
-                    Name
-                  </label>
-                  <input
-                    id="name"
-                    type="text"
-                    required
-                    className="h-11 rounded-md border border-neutral-300 bg-white px-3 outline-none focus:ring-2 focus:ring-cyan-300"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="email" className="text-sm tracking-wide uppercase text-neutral-700">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    className="h-11 rounded-md border border-neutral-300 bg-white px-3 outline-none focus:ring-2 focus:ring-cyan-300"
-                  />
-                </div>
-                <div className="flex flex-col gap-2 sm:col-span-2">
-                  <label htmlFor="message" className="text-sm tracking-wide uppercase text-neutral-700">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={5}
-                    required
-                    className="rounded-md border border-neutral-300 bg-white p-3 outline-none focus:ring-2 focus:ring-cyan-300"
-                  />
-                </div>
-                <div className="sm:col-span-2 flex items-center gap-4">
-                  <button type="submit" className="shimmer-button">
-                    <div className="spark-container"><div className="spark"><div className="spark-inner"></div></div></div>
-                    <span className="button-content">Submit</span>
-                    <div className="highlight"></div>
-                    <div className="backdrop"></div>
-                  </button>
-                  <p className="text-neutral-500 text-sm">We typically reply within 1 business day.</p>
-                </div>
-              </form>
-            </div>
-          </div>
-        </section>
+      <Navbar />
+      <main>
+        <HomeHero />
+        <IndustriesReach />
+        <ContactSection />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-neutral-200 bg-[#F9F9F9]">
-        <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
-          <div>
-            <p className="font-semibold">SwissBrand</p>
-            <p className="text-neutral-600 mt-2 max-w-xs">
-              Minimal interfaces with a typographic backbone and disciplined grids.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-8">
-            <ul className="space-y-2">
-              <li><a href="#home" className="hover:underline">Home</a></li>
-              <li><a href="#about" className="hover:underline">About</a></li>
-              <li><a href="#products" className="hover:underline">Products</a></li>
-              <li><a href="#contact" className="hover:underline">Contact</a></li>
-            </ul>
-            <ul className="space-y-2">
-              <li><a href="#" aria-label="Twitter" className="hover:underline">Twitter</a></li>
-              <li><a href="#" aria-label="LinkedIn" className="hover:underline">LinkedIn</a></li>
-              <li><a href="#" aria-label="Dribbble" className="hover:underline">Dribbble</a></li>
-              <li><a href="#" aria-label="GitHub" className="hover:underline">GitHub</a></li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-neutral-200">
-          <div className="mx-auto max-w-6xl px-6 py-6 text-sm text-neutral-500">
-            © {new Date().getFullYear()} SwissBrand. All rights reserved.
+      <footer className="border-t border-neutral-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+          <div className="grid grid-cols-12 gap-6" data-animate>
+            <div className="col-span-12 md:col-span-6">
+              <p className="font-semibold text-black">SVS Horizon Pvt Ltd</p>
+              <p className="mt-2 text-neutral-600">Hyderabad, India • enquiry@svshorizontraders.com • +91 8179665999</p>
+            </div>
+            <div className="col-span-12 md:col-span-6 md:text-right">
+              <nav className="inline-flex gap-4 text-neutral-600">
+                <a href="#home" className="hover:text-black">Home</a>
+                <a href="#about" className="hover:text-black">About</a>
+                <a href="#industries-reach" className="hover:text-black">Industries</a>
+                <a href="#contact" className="hover:text-black">Contact</a>
+              </nav>
+              <div className="mt-3 text-sm text-neutral-500">© {new Date().getFullYear()} SVS Horizon Pvt Ltd. All rights reserved.</div>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* Global Styles for Shimmer Button and Animations */}
-      <style>{`
-        html { scroll-behavior: smooth; }
-        :root {
-          --shimmer-bg: #0ea5e9; /* cyan-500 */
-          --shimmer-fg: #22d3ee; /* cyan-400 */
-          --shimmer-text: #0b1220; /* near-black for contrast */
-        }
-        /* Reveal animations */
-        [data-animate] { opacity: 0; transform: translateY(8px); transition: opacity .6s ease, transform .6s ease; }
-        [data-animate].in-view { opacity: 1; transform: none; }
-        [data-animate="fade-right"] { transform: translateX(-12px); }
-        [data-animate="fade-left"] { transform: translateX(12px); }
-        [data-animate="fade-in"] { transform: scale(.98); }
-
-        /* Shimmer Button Styles */
-        .shimmer-button {
-          position: relative;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: .5rem;
-          padding: .875rem 1.1rem;
-          border-radius: .75rem;
-          font-weight: 600;
-          letter-spacing: .02em;
-          color: white;
-          text-decoration: none;
-          isolation: isolate;
-          transition: transform .2s ease;
-          overflow: hidden;
-        }
-        .shimmer-button .backdrop {
-          position: absolute; inset: 0; border-radius: .75rem;
-          background: linear-gradient(180deg, rgba(14,165,233,1), rgba(6,182,212,1));
-          opacity: 1; z-index: -1;
-        }
-        .shimmer-button .highlight {
-          position: absolute; inset: 0; border-radius: .75rem;
-          background: linear-gradient(120deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 40%);
-          mix-blend-mode: soft-light;
-          pointer-events: none;
-          animation: sweep 2.4s linear infinite;
-        }
-        .shimmer-button .button-content { position: relative; z-index: 1; }
-        .shimmer-button:hover { transform: translateY(-1px); }
-        .shimmer-button:active { transform: translateY(0); }
-
-        .spark-container { position: absolute; inset: -40%; z-index: 0; }
-        .spark { position: absolute; width: 160%; height: 160%; left: -30%; top: -30%; overflow: hidden; }
-        .spark-inner {
-          position: absolute; width: 40%; height: 40%; border-radius: 9999px;
-          background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,0));
-          filter: blur(6px);
-          animation: float 4s ease-in-out infinite, orbit 6s linear infinite;
-        }
-
-        @keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-        @keyframes float { 0%,100% { transform: translate(0,0); } 50% { transform: translate(6%, -6%); } }
-        @keyframes orbit { from { left: -20%; top: 0; } to { left: 120%; top: 0; } }
-      `}</style>
+      <ScrollTop />
     </div>
   );
 }
 
-export default App;
+function ScrollTop() {
+  useEffect(() => {
+    const btn = document.getElementById('scrolltop');
+    const onScroll = () => {
+      if (!btn) return;
+      if (window.scrollY > 400) btn.classList.remove('opacity-0', 'pointer-events-none');
+      else btn.classList.add('opacity-0', 'pointer-events-none');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <button
+      id="scrolltop"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className="fixed bottom-6 right-6 inline-flex items-center justify-center h-10 w-10 rounded-full border border-neutral-200 bg-white shadow-sm text-black transition-opacity opacity-0 pointer-events-none"
+      aria-label="Scroll to top"
+    >
+      ↑
+    </button>
+  );
+}
